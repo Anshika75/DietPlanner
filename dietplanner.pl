@@ -382,4 +382,3 @@ accept_user_input :-
     write('You are '), write(Category), nl,
     % Determine which diet plan to generate based on users preference
     (Vegetarian -> generate_weekly_diet_schedule_veg; generate_weekly_diet_schedule_non_veg).
-W

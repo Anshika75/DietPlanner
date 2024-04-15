@@ -1,4 +1,4 @@
-% Define facts about available foods, type, veg/non_veg, time, calories, protein, carbs and fat values
+% facts about available foods, type, veg/non_veg, time, calories, protein, carbs and fat values
 
 % early morning food for both
 food(cinnamon_lemon_water, beverage, veg, early_morning, 0, 0, 0, 0).
@@ -153,7 +153,7 @@ food(chicken_biryani, meal, non_veg, dinner, 450, 35, 50, 20).
 food(fish_biryani, meal, non_veg, dinner, 400, 30, 45, 18).
 food(fish_soup, meal, non_veg, dinner, 250, 20, 15, 8).
 
-% Define predicates for each meal category
+% Predicates for each meal category
 early_morning_food(Food) :- food(Food, _, veg, early_morning, _, _, _, _).
 breakfast_food_veg(Food) :- food(Food, _, veg, breakfast, _, _, _, _).
 breakfast_food_non_veg(Food) :- food(Food, _, non_veg, breakfast, _, _, _, _).
@@ -167,13 +167,13 @@ dinner_food_veg(Food) :- food(Food, _, veg, dinner, _, _, _, _).
 dinner_food_non_veg(Food) :- food(Food, _, non_veg, dinner, _, _, _, _).
 
 
-% Define random_member/2 predicate
+% random_member/2 predicate
 random_member(X, List) :-
     length(List, Length),
     random(0, Length, Index),
     nth0(Index, List, X).
 
-% Define rules to generate meal plans for vegetarian
+% meal plans for vegetarian
 generate_meal_plan_veg(Early_Morning, Breakfast, Snack, Lunch, Evening_Snack, Dinner) :-
     generate_early_morning(Early_Morning),
     generate_breakfast_veg(Breakfast),
@@ -182,32 +182,32 @@ generate_meal_plan_veg(Early_Morning, Breakfast, Snack, Lunch, Evening_Snack, Di
     generate_evening_snack_veg(Evening_Snack),
     generate_dinner_veg(Dinner).
 
-% Generate early morning meal
+% early morning meal
 generate_early_morning(Meal) :-
     findall(Food, (food(Food, _, veg, early_morning, _, _, _, _), early_morning_food(Food)), Early_MorningOptionsVeg),
     random_member(Meal, Early_MorningOptionsVeg).
 
-% Generate breakfast meal
+% breakfast meal
 generate_breakfast_veg(Meal) :-
     findall(Food, (food(Food, _, veg, breakfast, _, _, _, _), breakfast_food_veg(Food)), BreakfastOptionsVeg),
     random_member(Meal, BreakfastOptionsVeg).
 
-% Generate snack meal
+% snack meal
 generate_snack_veg(Meal) :-
     findall(Food, (food(Food, _, veg, snack, _, _, _, _), snack_food_veg(Food)), SnackOptionsVeg),
     random_member(Meal, SnackOptionsVeg).
 
-% Generate lunch meal
+% lunch meal
 generate_lunch_veg(Meal) :-
     findall(Food, (food(Food, _, veg, lunch, _, _, _, _), lunch_food_veg(Food)), LunchOptionsVeg),
     random_member(Meal, LunchOptionsVeg).
 
-% Generate evening snack meal
+% evening snack meal
 generate_evening_snack_veg(Meal) :-
     findall(Food, (food(Food, _, veg, evening_snack, _, _, _, _), evening_snack_food_veg(Food)), Evening_SnackOptionsVeg),
     random_member(Meal, Evening_SnackOptionsVeg).
 
-% Generate dinner meal
+% dinner meal
 generate_dinner_veg(Meal) :-
     findall(Food, (food(Food, _, veg, dinner, _, _, _, _), dinner_food_veg(Food)), DinnerOptionsVeg),
     random_member(Meal, DinnerOptionsVeg).% Define predicates for each day of the week
@@ -222,37 +222,37 @@ generate_meal_plan_non_veg(Early_Morning, Breakfast, Snack, Lunch, Evening_Snack
     generate_evening_snack_non_veg(Evening_Snack),
     generate_dinner_non_veg(Dinner).
 
-% Generate early morning meal
+% early morning meal
 generate_early_morning(Meal) :-
     findall(Food, (food(Food, _, veg, early_morning, _, _, _, _), early_morning_food(Food)), Early_MorningOptionsNonVeg),
     random_member(Meal, Early_MorningOptionsNonVeg).
 
-% Generate breakfast meal
+% breakfast meal
 generate_breakfast_non_veg(Meal) :-
     findall(Food, (food(Food, _, non_veg, breakfast, _, _, _, _), breakfast_food_non_veg(Food)), BreakfastOptionsNonVeg),
     random_member(Meal, BreakfastOptionsNonVeg).
 
-% Generate snack meal
+% snack meal
 generate_snack_non_veg(Meal) :-
     findall(Food, (food(Food, _, non_veg, snack, _, _, _, _), snack_food_non_veg(Food)), SnackOptionsNonVeg),
     random_member(Meal, SnackOptionsNonVeg).
 
-% Generate lunch meal
+% lunch meal
 generate_lunch_non_veg(Meal) :-
     findall(Food, (food(Food, _, non_veg, lunch, _, _, _, _), lunch_food_non_veg(Food)), LunchOptionsNonVeg),
     random_member(Meal, LunchOptionsNonVeg).
 
-% Generate evening snack meal
+% evening snack meal
 generate_evening_snack_non_veg(Meal) :-
     findall(Food, (food(Food, _, non_veg, evening_snack, _, _, _, _), evening_snack_food_non_veg(Food)), Evening_SnackOptionsNonVeg),
     random_member(Meal, Evening_SnackOptionsNonVeg).
 
-% Generate dinner meal
+% dinner meal
 generate_dinner_non_veg(Meal) :-
     findall(Food, (food(Food, _, non_veg, dinner, _, _, _, _), dinner_food_non_veg(Food)), DinnerOptionsNonVeg),
     random_member(Meal, DinnerOptionsNonVeg).% Define predicates for each day of the week
     
- % Define predicates for each day of the week
+% Predicates for each day of the week
 day(monday).
 day(tuesday).
 day(wednesday).
@@ -261,7 +261,7 @@ day(friday).
 day(saturday).
 day(sunday).
 
-% Define a predicate to generate veg meals for each day
+% Predicate to generate veg meals for each day
 generate_daily_meals_veg(Day, Meals) :-
     generate_early_morning(EarlyMorning),
     generate_breakfast_veg(Breakfast),
@@ -271,9 +271,7 @@ generate_daily_meals_veg(Day, Meals) :-
     generate_dinner_veg(Dinner),
     Meals = [EarlyMorning, Breakfast, Snack, Lunch, EveningSnack, Dinner].
 
-
-
-% Define a predicate to generate meals for each day
+% Predicate to generate meals for each day
 generate_daily_meals_non_veg(Day, Meals) :-
     generate_early_morning(EarlyMorning),
     generate_breakfast_non_veg(Breakfast),
@@ -283,7 +281,7 @@ generate_daily_meals_non_veg(Day, Meals) :-
     generate_dinner_non_veg(Dinner),
     Meals = [EarlyMorning, Breakfast, Snack, Lunch, EveningSnack, Dinner].
 
-% Define a predicate to calculate the total nutrition count for a list of meals
+% Predicate to calculate the total nutrition count for a list of meals
 total_nutrition_count(Meals, TotalCalories, TotalProtein, TotalCarbs, TotalFats) :-
     total_nutrition_count(Meals, 0.0, 0.0, 0.0, 0.0, TotalCalories, TotalProtein, TotalCarbs, TotalFats).
 
@@ -342,11 +340,11 @@ generate_weekly_diet_schedule_non_veg :-
     print_schedule(NonVegWeeklySchedule),
     !.
 
-% Redefine print_schedule to suppress output
 print_schedule([]).
 print_schedule([Day-Meals|Rest]) :-
     print_daily_meals(Day, Meals),
     print_schedule(Rest).
+
 % Predicate to calculate BMI
 calculate_bmi(Weight, Height, BMI) :-
     HeightMeters is Height / 100,
@@ -374,9 +372,7 @@ accept_user_input :-
     read(Weight),
     write('Enter your height (in cm): '),
     read(Height),
-    % Calculate BMI
     calculate_bmi(Weight, Height, BMI),
-    % Categorize BMI
     categorize_bmi(BMI, Category),
     write('Your BMI is: '), write(BMI), nl,
     write('You are '), write(Category), nl,

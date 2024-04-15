@@ -261,28 +261,6 @@ day(friday).
 day(saturday).
 day(sunday).
 
-% Define a predicate to generate veg meals for each day
-generate_daily_meals_veg(Day, Meals) :-
-    generate_early_morning(EarlyMorning),
-    generate_breakfast_veg(Breakfast),
-    generate_snack_veg(Snack),
-    generate_lunch_veg(Lunch),
-    generate_evening_snack_veg(EveningSnack),
-    generate_dinner_veg(Dinner),
-    Meals = [EarlyMorning, Breakfast, Snack, Lunch, EveningSnack, Dinner].
-
-
-
-% Define a predicate to generate meals for each day
-generate_daily_meals_non_veg(Day, Meals) :-
-    generate_early_morning(EarlyMorning),
-    generate_breakfast_non_veg(Breakfast),
-    generate_snack_non_veg(Snack),
-    generate_lunch_non_veg(Lunch),
-    generate_evening_snack_non_veg(EveningSnack),
-    generate_dinner_non_veg(Dinner),
-    Meals = [EarlyMorning, Breakfast, Snack, Lunch, EveningSnack, Dinner].
-
 % Define a predicate to calculate the total nutrition count for a list of meals
 total_nutrition_count(Meals, TotalCalories, TotalProtein, TotalCarbs, TotalFats) :-
     total_nutrition_count(Meals, 0.0, 0.0, 0.0, 0.0, TotalCalories, TotalProtein, TotalCarbs, TotalFats).
@@ -327,22 +305,153 @@ print_meal_category(Category, Meals) :-
     food(Meal, _, _, Category, _, _, _, _),
     write(Category), write(': '), write(Meal), nl.
 
+#####################################################################33333
+    
 
-% Print weekly diet schedule for veg
-generate_weekly_diet_schedule_veg :-
-    % Findall meals for each day and print them directly
-    findall(Day-Meals, (day(Day), generate_daily_meals_veg(Day, Meals)), VegWeeklySchedule),
-    print_schedule(VegWeeklySchedule).
-
-
-% Print weekly diet schedule
+% Print weekly diet schedule for non-veg
 generate_weekly_diet_schedule_non_veg :-
     % Findall meals for each day and print them directly
     findall(Day-Meals, (day(Day), generate_daily_meals_non_veg(Day, Meals)), NonVegWeeklySchedule),
-    print_schedule(NonVegWeeklySchedule).
+    print_schedule(NonVegWeeklySchedule),
+    !.
 
-% Print weekly diet schedule
+% Redefine print_schedule to suppress output
 print_schedule([]).
 print_schedule([Day-Meals|Rest]) :-
     print_daily_meals(Day, Meals),
     print_schedule(Rest).
+% Define a predicate to calculate BMI
+calculate_bmi(Weight, Height, BMI) :-
+    HeightInMeters is Height / 100,
+    BMI is Weight / (HeightInMeters * HeightInMeters).
+
+% Define a predicate to classify BMI into categories
+classify_bmi(BMI, Category) :-
+    (BMI < 18.5 -> Category = underweight;
+    BMI >= 18.5, BMI < 25 -> Category = normal;
+    BMI >= 25, BMI < 30 -> Category = overweight;
+    Category = obese).
+
+% Define a predicate to generate diet plan based on BMI and vegetarian/non-vegetarian choice
+% Modify the generate_weekly_diet_schedule_veg predicate
+generate_weekly_diet_schedule_veg(BMI) :-
+    classify_bmi(BMI, Category),
+    (Category == underweight ->
+        generate_weekly_diet_schedule_veg_underweight;
+    Category == normal ->
+        generate_weekly_diet_schedule_veg_normal;
+    Category == overweight ->
+        generate_weekly_diet_schedule_veg_overweight;
+    generate_weekly_diet_schedule_veg_normal % For obese, default to normal plan
+    ).
+
+% Define a predicate to generate veg meals for each day for underweight individuals
+generate_daily_meals_veg_underweight(Day, Meals) :-
+    generate_early_morning(EarlyMorning),
+    generate_breakfast_veg(Breakfast),
+    generate_snack_veg(Snack),
+    generate_lunch_veg(Lunch),
+    generate_evening_snack_veg(EveningSnack),
+    generate_dinner_veg(Dinner),
+    Meals = [EarlyMorning, Breakfast, Snack, Lunch, EveningSnack, Dinner].
+
+% Define the specific meal plans for each weight category for vegetarians underweight
+generate_weekly_diet_schedule_veg_underweight :-
+% Findall meals for each day and print them directly
+    findall(Day-Meals, (day(Day), generate_daily_meals_veg_underweight(Day, Meals)), VegWeeklySchedule),
+    print_schedule(VegWeeklySchedule),
+    !.
+    
+% define a predicate to generate veg meals for each day for normal weight individuals
+generate_daily_meals_veg_normal(Day, Meals) :-
+    generate_early_morning(EarlyMorning),
+    generate_breakfast_veg(Breakfast),
+    generate_snack_veg(Snack),
+    generate_lunch_veg(Lunch),
+    generate_dinner_veg(Dinner),
+    Meals = [EarlyMorning, Breakfast, Snack, Lunch, EveningSnack, Dinner].
+
+% Define the specific meal plans for each weight category for vegetarians normal
+generate_weekly_diet_schedule_veg_normal :-
+% Findall meals for each day and print them directly
+    findall(Day-Meals, (day(Day), generate_daily_meals_veg_normal(Day, Meals)), VegWeeklySchedule),
+    print_schedule(VegWeeklySchedule),
+    !.
+
+% Define a predicate to generate meals for each day
+generate_daily_meals_non_veg(Day, Meals) :-
+    generate_early_morning(EarlyMorning),
+    generate_breakfast_non_veg(Breakfast),
+    generate_snack_non_veg(Snack),
+    generate_lunch_non_veg(Lunch),
+    generate_evening_snack_non_veg(EveningSnack),
+    generate_dinner_non_veg(Dinner),
+    Meals = [EarlyMorning, Breakfast, Snack, Lunch, EveningSnack, Dinner].
+
+
+generate_weekly_diet_schedule_veg_normal :-
+    % Define normal weight meal plan for vegetarians (include only snacks)
+    % You can define specific rules to generate the diet plan for normal weight individuals here.
+    % For example:
+    generate_weekly_diet_schedule_veg.
+
+generate_weekly_diet_schedule_veg_overweight :-
+    % Define overweight meal plan for vegetarians (exclude snacks and evening snacks)
+    % You can define specific rules to generate the diet plan for overweight individuals here.
+    % For example:
+    generate_weekly_diet_schedule_veg.
+
+% Modify the generate_weekly_diet_schedule_non_veg predicate
+generate_weekly_diet_schedule_non_veg(BMI) :-
+    classify_bmi(BMI, Category),
+    (Category == underweight ->
+        generate_weekly_diet_schedule_non_veg_underweight;
+    Category == normal ->
+        generate_weekly_diet_schedule_non_veg_normal;
+    Category == overweight ->
+        generate_weekly_diet_schedule_non_veg_overweight;
+    generate_weekly_diet_schedule_non_veg_normal % For obese, default to normal plan
+    ).
+
+% Define the specific meal plans for each weight category for non-vegetarians
+generate_weekly_diet_schedule_non_veg_underweight :-
+    % Define underweight meal plan for non-vegetarians (include snacks and evening snacks)
+    % You can define specific rules to generate the diet plan for underweight individuals here.
+    % For example:
+    generate_weekly_diet_schedule_non_veg.
+
+generate_weekly_diet_schedule_non_veg_normal :-
+    % Define normal weight meal plan for non-vegetarians (include only snacks)
+    % You can define specific rules to generate the diet plan for normal weight individuals here.
+    % For example:
+    generate_weekly_diet_schedule_non_veg.
+
+generate_weekly_diet_schedule_non_veg_overweight :-
+    % Define overweight meal plan for non-vegetarians (exclude snacks and evening snacks)
+    % You can define specific rules to generate the diet plan for overweight individuals here.
+    % For example:
+    generate_weekly_diet_schedule_non_veg.
+
+% Define a predicate to accept user input and generate diet plan
+accept_user_input :-
+    write('Enter your name: '),
+    read(Name),
+    write('Enter your age: '),
+    read(Age),
+    write('Are you vegetarian? (yes/no): '),
+    read(VegetarianResponse),
+    (VegetarianResponse == yes ->
+        Vegetarian = true;
+        Vegetarian = false
+    ),
+    write('Enter your weight (in kg): '),
+    read(Weight),
+    write('Enter your height (in cm): '),
+    read(Height),
+    calculate_bmi(Weight, Height, BMI),
+    classify_bmi(BMI, Category),
+    write('Hello '), write(Name), write('!'), nl,
+    write('Your BMI is: '), write(BMI), nl,
+    write('You fall into the '), write(Category), write(' category.'), nl,
+    write('Here is your weekly diet plan:'), nl,
+    generate_diet_plan(BMI, Vegetarian).
